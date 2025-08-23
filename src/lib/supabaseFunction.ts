@@ -12,3 +12,11 @@ export const addTodo = async (title: string) => {
   }
   return error;
 }
+
+export const deleteTodo = async (id: number) => {
+  const { error } = await supabase.from("todo-app").delete().eq("id", id);
+  if (error) {
+    console.error(error);
+  }
+  return error;
+}

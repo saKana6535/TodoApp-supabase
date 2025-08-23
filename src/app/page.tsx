@@ -2,7 +2,7 @@
 
 import {Button} from "@/components/ui/button";
 import {Input} from "@/components/ui/input"
-import { getAllTodos, addTodo } from "@/lib/supabaseFunction";
+import { getAllTodos, addTodo, deleteTodo } from "@/lib/supabaseFunction";
 import { useState, useEffect } from "react";
 
 interface Todo {
@@ -37,6 +37,12 @@ export default function Home() {
       console.error(error);
     }
   }
+
+  const handleDeleteTodo = async (id: number) => {
+    await deleteTodo(id);
+    const updateTodos = await getAllTodos();
+    setTodos(updateTodos || []);
+  }
   
   return (
     <section className="text-center">
@@ -53,8 +59,14 @@ export default function Home() {
         />
       <Button onClick={handleAddTodo}>Add</Button>
       {todos.map((todo) => (
-        <div key={todo.id}>
+        <div key={todo.id} className="flex justify-center items-center">
           <h4>{todo.title}</h4>
+          <Button 
+            onClick={() => handleDeleteTodo(todo.id)} 
+            variant="destructive"
+          >
+            Delete
+          </Button>
         </div>
       ))}
     </section>
