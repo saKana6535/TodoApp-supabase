@@ -1,9 +1,10 @@
 'use client'
 
-import {Button} from "@/components/ui/button";
-import {Input} from "@/components/ui/input"
+import { Button } from "@/components/ui/button";
+import {Input } from "@/components/ui/input"
 import { getAllTodos, addTodo, deleteTodo } from "@/lib/supabaseFunction";
 import { useState, useEffect } from "react";
+import { Trash2, Plus, CheckCircle } from "lucide-react";
 
 interface Todo {
   id: number;
@@ -17,7 +18,7 @@ export default function Home() {
   useEffect(() => {
     const getTodos = async () => {
       try {
-        const todos= await getAllTodos();
+        const todos = await getAllTodos();
         setTodos(todos || []);
       } catch (error) {
         console.error(error);
@@ -39,36 +40,89 @@ export default function Home() {
   }
 
   const handleDeleteTodo = async (id: number) => {
-    await deleteTodo(id);
-    const updateTodos = await getAllTodos();
-    setTodos(updateTodos || []);
+    try {
+      await deleteTodo(id);
+      const updatedTodos = await getAllTodos();
+      setTodos(updatedTodos || []);
+    } catch (error) {
+      console.error(error);
+    }
   }
   
   return (
-    <section className="text-center">
-      <h3>Supabase Todo App</h3>
-      <Input 
-        value={inputValue} 
-        onChange={(e) => setInputValue(e.target.value)} 
-        placeholder="Add a new todo"
-        onKeyDown={(e) => {
-          if (e.key === 'Enter') {
-            handleAddTodo();
-          }
-        }}
-        />
-      <Button onClick={handleAddTodo}>Add</Button>
-      {todos.map((todo) => (
-        <div key={todo.id} className="flex justify-center items-center">
-          <h4>{todo.title}</h4>
-          <Button 
-            onClick={() => handleDeleteTodo(todo.id)} 
-            variant="destructive"
-          >
-            Delete
-          </Button>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-8 px-4">
+      <div className="max-w-2xl mx-auto">
+        {/* ヘッダー */}
+        <h1 className="text-center mb-8 text-4xl font-bold text-gray-800 mb-2">
+          ✨ Todo App
+        </h1>
+
+        {/* 入力フォーム */}
+        <div className="bg-white rounded-2xl shadow-lg p-6 mb-8">
+          <div className="flex gap-3">
+            <Input 
+              value={inputValue} 
+              onChange={(e) => setInputValue(e.target.value)} 
+              placeholder="Add a new todo..."
+              className="flex-1 text-lg border-2 border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 rounded-xl transition-all duration-200"
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  handleAddTodo();
+                }
+              }}
+            />
+            <Button 
+              onClick={handleAddTodo}
+              className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl transition-all duration-200 shadow-md hover:shadow-lg flex items-center gap-2"
+            >
+              <Plus size={20} />
+              Add
+            </Button>
+          </div>
         </div>
-      ))}
-    </section>
+
+        {/* Todoリスト */}
+        <div className="space-y-3">
+          {todos.length === 0 ? (
+            <div className="text-center py-12">
+              <CheckCircle className="mx-auto text-gray-300 mb-4" size={48} />
+              <p className="text-gray-500 text-lg">
+                タスクがありません。新しいタスクを追加してみましょう！
+              </p>
+            </div>
+          ) : (
+            todos.map((todo) => (
+              <div 
+                key={todo.id} 
+                className="bg-white rounded-xl shadow-md p-4 hover:shadow-lg transition-all duration-200 border border-gray-100"
+              >
+                <div className="flex items-center justify-between">
+                  <h3 className="flex items-center gap-3 flex-1 text-lg text-gray-800 font-medium">
+                    {todo.title}
+                  </h3>
+                  <Button 
+                    onClick={() => handleDeleteTodo(todo.id)}
+                    variant="ghost"
+                    size="sm"
+                    className="text-red-500 hover:text-red-700 hover:bg-red-50 rounded-lg transition-all duration-200"
+                  >
+                    <Trash2 size={18} />
+                  </Button>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+
+        {/* 統計情報 */}
+        {todos.length > 0 && (
+          <div className="mt-8 text-center">
+            <p className="text-gray-600">
+              合計 <span className="font-semibold text-blue-600">{todos.length}</span> 件のタスク
+            </p>
+          </div>
+        )}
+      </div>
+    </div>
   );
 }
