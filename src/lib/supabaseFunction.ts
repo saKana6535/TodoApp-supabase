@@ -5,12 +5,13 @@ export const getAllTodos = async () => {
   return todos.data;
 }
 
-export const addTodo = async (title: string) => {
-  const { error } = await supabase.from("todo-app").insert({title});
-  if (error) {
-    console.error(error);
+export const addTodo = async (title: string, description?: string) => {
+  if (description) {
+    await supabase.from("todo-app").insert({title, description});
   }
-  return error;
+  else {
+    await supabase.from("todo-app").insert({title});
+  }
 }
 
 export const deleteTodo = async (id: number) => {

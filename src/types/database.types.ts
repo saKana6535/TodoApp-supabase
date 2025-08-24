@@ -18,14 +18,17 @@ export type Database = {
         Row: {
           id: number
           title: string | null
+          description?: string | null
         }
         Insert: {
           id?: number
           title?: string | null
+          description?: string | null
         }
         Update: {
           id?: number
           title?: string | null
+          description?: string | null
         }
         Relationships: []
       }

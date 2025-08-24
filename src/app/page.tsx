@@ -9,11 +9,13 @@ import { Trash2, Plus, CheckCircle } from "lucide-react";
 interface Todo {
   id: number;
   title: string;
+  description?: string;
 }
 
 export default function Home() {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [inputValue, setInputValue] = useState("");
+  const [descriptionValue, setdescriptionValue] = useState("");
 
   useEffect(() => {
     const getTodos = async () => {
@@ -30,8 +32,9 @@ export default function Home() {
   const handleAddTodo = async () => {
     if (inputValue.trim() === "") return;
     try {
-      await addTodo(inputValue);
+      await addTodo(inputValue, descriptionValue);
       setInputValue("");
+      setdescriptionValue("");
       const updatedTodos = await getAllTodos();
       setTodos(updatedTodos || []);
     } catch (error) {
@@ -59,18 +62,31 @@ export default function Home() {
 
         {/* 入力フォーム */}
         <div className="bg-white rounded-2xl shadow-lg p-6 mb-8">
-          <div className="flex gap-3">
+          <div className="space-y-4">
+            {/* タイトル入力 */}
             <Input 
               value={inputValue} 
               onChange={(e) => setInputValue(e.target.value)} 
               placeholder="Add a new todo..."
-              className="flex-1 text-lg border-2 border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 rounded-xl transition-all duration-200"
+              className="text-lg border-2 border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 rounded-xl transition-all duration-200"
               onKeyDown={(e) => {
                 if (e.key === 'Enter') {
                   handleAddTodo();
                 }
               }}
             />
+            {/* 説明入力 */}
+            <Input 
+              value={descriptionValue} 
+              onChange={(e) => setdescriptionValue(e.target.value)} 
+              placeholder="description(optional)"
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  handleAddTodo();
+                }
+              }}
+            />
+            {/* Addボタン */}
             <Button 
               onClick={handleAddTodo}
               className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl transition-all duration-200 shadow-md hover:shadow-lg flex items-center gap-2"
@@ -96,15 +112,22 @@ export default function Home() {
                 key={todo.id} 
                 className="bg-white rounded-xl shadow-md p-4 hover:shadow-lg transition-all duration-200 border border-gray-100"
               >
-                <div className="flex items-center justify-between">
-                  <h3 className="flex items-center gap-3 flex-1 text-lg text-gray-800 font-medium">
-                    {todo.title}
-                  </h3>
+                <div className="flex items-start justify-between">
+                  <div className="flex-1">
+                    <h3 className="text-lg text-gray-800 font-medium mb-2">
+                      {todo.title}
+                    </h3>
+                    {todo.description && (
+                      <p className="text-gray-600 text-sm leading-relaxed">
+                        {todo.description}
+                      </p>
+                    )}
+                  </div>
                   <Button 
                     onClick={() => handleDeleteTodo(todo.id)}
                     variant="ghost"
                     size="sm"
-                    className="text-red-500 hover:text-red-700 hover:bg-red-50 rounded-lg transition-all duration-200"
+                    className="text-red-500 hover:text-red-700 hover:bg-red-50 rounded-lg transition-all duration-200 ml-4"
                   >
                     <Trash2 size={18} />
                   </Button>
