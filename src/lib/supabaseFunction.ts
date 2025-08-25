@@ -21,3 +21,14 @@ export const deleteTodo = async (id: number) => {
   }
   return error;
 }
+
+export const updateTodo = async (id: number, title: string, description?: string) =>{
+  const { error } = await supabase
+   .from("todo-app")
+   .update((description) ? {title, description} : {title})
+   .eq("id", id); 
+
+  if (error) {
+    throw new Error(error.message);
+  }
+}
