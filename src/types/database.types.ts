@@ -16,19 +16,19 @@ export type Database = {
     Tables: {
       "todo-app": {
         Row: {
+          description: string | null
           id: number
-          title: string | null
-          description?: string | null
+          title: string
         }
         Insert: {
-          id?: number
-          title?: string | null
           description?: string | null
+          id?: number
+          title: string
         }
         Update: {
-          id?: number
-          title?: string | null
           description?: string | null
+          id?: number
+          title?: string
         }
         Relationships: []
       }
