@@ -6,11 +6,11 @@ interface TodoFormProps {
   inputValue: string;
   setInputValue: (value: string) => void;
   descriptionValue: string;
-  setdescriptionValue: (value: string) => void;
+  setDescriptionValue: (value: string) => void;
   handleAddTodo: () => void;
 }
 
-export default function TodoForm({ inputValue, setInputValue, descriptionValue, setdescriptionValue, handleAddTodo }: TodoFormProps) {
+export default function TodoForm({ inputValue, setInputValue, descriptionValue, setDescriptionValue, handleAddTodo }: TodoFormProps) {
   return (
     <div className="bg-white rounded-2xl shadow-lg p-6 mb-8">
       <div className="space-y-4">
@@ -29,7 +29,7 @@ export default function TodoForm({ inputValue, setInputValue, descriptionValue, 
         {/* 説明入力 */}
         <Input 
           value={descriptionValue} 
-          onChange={(e) => setdescriptionValue(e.target.value)} 
+          onChange={(e) => setDescriptionValue(e.target.value)} 
           placeholder="Description(optional)"
           onKeyDown={(e) => {
             if (e.key === 'Enter') {

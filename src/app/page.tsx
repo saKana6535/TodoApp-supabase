@@ -19,7 +19,7 @@ export default function Home() {
 
   // タスク新規追加用の状態
   const [inputValue, setInputValue] = useState("");
-  const [descriptionValue, setdescriptionValue] = useState("");
+  const [descriptionValue, setDescriptionValue] = useState("");
 
   // タスク編集用の状態
   const [editingTodo, setEditingTodo] = useState<Todo | null>(null);
@@ -44,7 +44,7 @@ export default function Home() {
     try {
       await addTodo(inputValue, descriptionValue);
       setInputValue("");
-      setdescriptionValue("");
+      setDescriptionValue("");
       const updatedTodos = await getAllTodos();
       setTodos(updatedTodos || []);
     } catch (error) {
@@ -97,7 +97,7 @@ export default function Home() {
           inputValue={inputValue}
           setInputValue={setInputValue}
           descriptionValue={descriptionValue}
-          setdescriptionValue={setdescriptionValue}
+          setDescriptionValue={setDescriptionValue}
           handleAddTodo={handleAddTodo}
         />
 
