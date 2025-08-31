@@ -1,11 +1,6 @@
 import { CheckCircle } from "lucide-react"
 import TodoItem from "./TodoItem"
-
-interface Todo {
-  id: number;
-  title: string;
-  description?: string;
-}
+import { Todo } from "@/types/todo.types"
 
 interface TodoListProps {
   todos: Todo[];

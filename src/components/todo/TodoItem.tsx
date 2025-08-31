@@ -1,11 +1,6 @@
 import { Button } from "@/components/ui/button"
 import { Trash2 } from "lucide-react"
-
-interface Todo {
-  id: number;
-  title: string;
-  description?: string;
-}
+import { Todo } from "@/types/todo.types"
 
 interface TodoItemProps {
   todo: Todo;

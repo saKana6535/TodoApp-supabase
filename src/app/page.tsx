@@ -7,12 +7,7 @@ import TodoList from "@/components/todo/TodoList";
 import TodoEditModal from "@/components/todo/TodoEditModal";
 import TodoStatus from "@/components/todo/TodoStatus";
 import Header from "@/components/common/Header";
-
-interface Todo {
-  id: number;
-  title: string;
-  description?: string;
-}
+import { Todo } from "@/types/todo.types";
 
 export default function Home() {
   const [todos, setTodos] = useState<Todo[]>([]);
