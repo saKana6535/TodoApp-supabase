@@ -1,23 +1,11 @@
-"use client";
-
 import { Todo } from "@/types/todo.types";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { addTodo, deleteTodo, getAllTodos, updateTodo } from "@/lib/api/supabaseFunction";
 
-
-export default function useTodos() {
+export function useTodos() {
   const [todos, setTodos] = useState<Todo[]>([]);
 
-  // タスク新規追加用の状態
-  const [inputValue, setInputValue] = useState("");
-  const [descriptionValue, setDescriptionValue] = useState("");
-
-  // タスク編集用の状態
-  const [editingTodo, setEditingTodo] = useState<Todo | null>(null);
-  const [editTitle, setEditTitle] = useState("");
-  const [editDescription, setEditDescription] = useState("");
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-
+  // 初期データ取得
   useEffect(() => {
     const getTodos = async () => {
       try {
@@ -30,20 +18,22 @@ export default function useTodos() {
     getTodos();
   }, []);
 
-  const handleAddTodo = async () => {
-    if (inputValue.trim() === "") return;
+  // Todo追加処理
+  const handleAddTodo = useCallback(async (title: string, description?: string) => {
+    if (title.trim() === "") return;
     try {
-      await addTodo(inputValue, descriptionValue);
-      setInputValue("");
-      setDescriptionValue("");
+      // descriptionが空文字の場合はundefinedにする
+      const descToSend = description?.trim() || undefined;
+      await addTodo(title, descToSend);
       const updatedTodos = await getAllTodos();
       setTodos(updatedTodos || []);
     } catch (error) {
       console.error(error);
     }
-  }
+  }, []);
 
-  const handleDeleteTodo = async (id: number) => {
+  // Todo削除処理
+  const handleDeleteTodo = useCallback(async (id: number) => {
     try {
       await deleteTodo(id);
       const updatedTodos = await getAllTodos();
@@ -51,55 +41,26 @@ export default function useTodos() {
     } catch (error) {
       console.error(error);
     }
-  }
+  }, []);
 
-  const startEditing = (todo: Todo) => {
-    setIsEditModalOpen(true);
-    setEditingTodo(todo);
-    setEditTitle(todo.title);
-    setEditDescription(todo.description || "");
-  }
-
-  const saveEdit = async () => {
-    if (!editingTodo || editTitle.trim() === "") return;
-
+  // Todo更新処理
+  const handleUpdateTodo = useCallback(async (id: number, title: string, description?: string) => {
+    if (title.trim() === "") return;
     try {
-      await updateTodo(editingTodo.id, editTitle, editDescription);
-      const updateTodos = await getAllTodos();
-      setTodos(updateTodos || []);
-      closeEditModal();
+      // descriptionが空文字の場合はundefinedにする
+      const descToSend = description?.trim() || undefined;
+      await updateTodo(id, title, descToSend);
+      const updatedTodos = await getAllTodos();
+      setTodos(updatedTodos || []);
     } catch (error) {
       console.error(error);
     }
-  }
-  const closeEditModal = () => {
-    setIsEditModalOpen(false);
-    setEditingTodo(null);
-    setEditTitle("");
-    setEditDescription("");
-  }
+  }, []);
 
   return {
-    // 状態
     todos,
-    inputValue,
-    descriptionValue,
-    editTitle,
-    editDescription,
-    isEditModalOpen,
-    
-    // setter関数
-    setInputValue,
-    setDescriptionValue,
-    setEditTitle,
-    setEditDescription,
-    setIsEditModalOpen,
-    
-    // ハンドラー関数
     handleAddTodo,
     handleDeleteTodo,
-    startEditing,
-    saveEdit,
-    closeEditModal
+    handleUpdateTodo
   };
 }

@@ -5,45 +5,39 @@ import TodoList from "@/components/todo/TodoList";
 import TodoEditModal from "@/components/todo/TodoEditModal";
 import TodoStatus from "@/components/todo/TodoStatus";
 import Header from "@/components/common/Header";
-import useTodos from "@/hooks/use-todos";
+import { useTodos } from "@/hooks/use-todos";
+import { useTodoEdit } from "@/hooks/use-todo-edit";
 
 export default function Home() {
+  const { todos, handleAddTodo, handleDeleteTodo, handleUpdateTodo } = useTodos();
+  
   const {
-    // 状態
-    todos,
-    inputValue,
-    descriptionValue,
+    editingTodo,
     editTitle,
     editDescription,
     isEditModalOpen,
-    
-    // setter関数
-    setInputValue,
-    setDescriptionValue,
     setEditTitle,
     setEditDescription,
     setIsEditModalOpen,
-    
-    // ハンドラー関数
-    handleAddTodo,
-    handleDeleteTodo,
     startEditing,
-    saveEdit,
     closeEditModal
-  } = useTodos();
-  
+  } = useTodoEdit();
+
+  const saveEdit = async () => {
+    if (!editingTodo || editTitle.trim() === "") return;
+    
+    // descriptionが空文字の場合はundefinedを渡す
+    const description = editDescription.trim() || undefined;
+    await handleUpdateTodo(editingTodo.id, editTitle.trim(), description);
+    closeEditModal();
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-8 px-4">
       <div className="max-w-2xl mx-auto">
         <Header />
 
-        <TodoForm
-          inputValue={inputValue}
-          setInputValue={setInputValue}
-          descriptionValue={descriptionValue}
-          setDescriptionValue={setDescriptionValue}
-          handleAddTodo={handleAddTodo}
-        />
+        <TodoForm onAddTodo={handleAddTodo} />
 
         <TodoList
           todos={todos}
