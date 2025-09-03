@@ -33,7 +33,7 @@ export default function TodoForm({ onAddTodo }: TodoFormProps) {
           placeholder="Add a new todo..."
           className="text-lg border-2 border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 rounded-xl transition-all duration-200"
           onKeyDown={(e) => {
-            if (e.key === 'Enter') {
+            if (e.key === 'Enter' && !e.nativeEvent.isComposing) {
               handleSubmit();
             }
           }}
@@ -44,7 +44,7 @@ export default function TodoForm({ onAddTodo }: TodoFormProps) {
           onChange={(e) => setDescriptionValue(e.target.value)} 
           placeholder="Description (optional)"
           onKeyDown={(e) => {
-            if (e.key === 'Enter') {
+            if (e.key === 'Enter' && !e.nativeEvent.isComposing) {
               handleSubmit();
             }
           }}
